@@ -6,53 +6,79 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:41:22 by asando            #+#    #+#             */
-/*   Updated: 2025/05/06 12:04:34 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/06 12:56:30 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-t_list	*ft_lstnew(void *content)
+size_t	ft_strlen(const char *str)
 {
-	t_list	*new_node;
+	size_t	count;
 
-	new_node = malloc(sizeof(t_list));
-	if (new_node == NULL)
+	count = 0;
+	while (str[count] != '\0')
+		count++;
+	return (count);
+}
+
+size_t	ft_strlcpy(char *dest, const char *src, size_t len)
+{
+	size_t	i;
+	int		len_src;
+
+	i = 0;
+	len_src = ft_strlen(src);
+	if (!src)
+		return (0);
+	if (len == 0)
+		return (len_src);
+	while ((src[i] != '\0') && i < (len - 1))
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = 0;
+	return (len_src);
+}
+
+size_t	ft_strlcat(char *dest, const char *src, size_t len)
+{
+	size_t	i;
+	size_t	dest_len;
+	size_t	src_len;
+	size_t	total_len;
+
+	i = 0;
+	dest_len = ft_strlen(dest);
+	src_len = ft_strlen(src);
+	total_len = dest_len + src_len;
+	if (len <= dest_len)
+		return (src_len + len);
+	while (src[i] != '\0' && ((dest_len + i) < (len - 1)))
+	{
+		dest[dest_len + i] = src[i];
+		i++;
+	}
+	if ((dest_len + i) < len)
+		dest[dest_len + i] = '\0';
+	return (total_len);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*result_str;
+	size_t	s1_len;
+	size_t	s2_len;
+	int		total_len;
+
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	total_len = s1_len + s2_len + 1;
+	result_str = malloc(total_len * sizeof(char));
+	if (result_str == NULL)
 		return (NULL);
-	new_node->content = content;
-	new_node->next = NULL;
-	return (new_node);
-}
-
-void	ft_lstadd_back(t_list **lst, t_list *new)
-{
-	t_list	*curr;
-
-	if (*lst == NULL)
-	{
-		*lst = new;
-		return ;
-	}
-	curr = *lst;
-	while (curr->next != NULL)
-		curr = curr->next;
-	curr->next = new;
-}
-
-void	ft_lstclear(t_list **lst, void (*del)(void *))
-{
-	t_list	*curr;
-	t_list	*temp;
-
-	if (lst == NULL || *lst == NULL)
-		return ;
-	curr = *lst;
-	while (curr != NULL)
-	{
-		temp = curr;
-		curr = curr->next;
-		del(temp->content);
-		free(temp);
-	}
-	*lst = NULL;
+	ft_strlcpy(result_str, s1, s1_len + 1);
+	ft_strlcat(result_str, s2, total_len);
+	return (result_str);
 }

@@ -6,7 +6,7 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:41:04 by asando            #+#    #+#             */
-/*   Updated: 2025/05/06 12:05:04 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/09 13:31:01 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,10 @@
 #  define BUFFER_SIZE 8
 # endif
 
-typedef struct	s_list
-{
-	void			*content;
-	struct s_list	*next;
-}	t_list;
-
 char	*get_next_line(int fd);
-t_list	*ft_lstnew(void *content);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-void	ft_lstclear(t_list **lst, void (*del)(void *));
+size_t	ft_strlcat(char *dest, const char *src, size_t len);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlcpy(char *dest, const char *src, size_t len);
+size_t	ft_strlen(const char *str);
+char	*ft_strchr(const char *str, int c);
 #endif

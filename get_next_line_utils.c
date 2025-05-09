@@ -6,11 +6,29 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:41:22 by asando            #+#    #+#             */
-/*   Updated: 2025/05/06 12:56:30 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/09 13:29:27 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*ft_strchr(const char *str, int c)
+{
+	int		i;
+	char	*str_uc;
+
+	str_uc = (char *)str;
+	i = 0;
+	while (str_uc[i] != '\0')
+	{
+		if ((unsigned char)str_uc[i] == (unsigned char)c)
+			return (&str_uc[i]);
+		i++;
+	}
+	if ((unsigned char)str_uc[i] == (unsigned char)c)
+		return (&str_uc[i]);
+	return (NULL);
+}
 
 size_t	ft_strlen(const char *str)
 {

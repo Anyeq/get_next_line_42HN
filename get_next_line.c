@@ -6,12 +6,12 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:40:51 by asando            #+#    #+#             */
-/*   Updated: 2025/05/09 13:26:48 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/10 15:39:02 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
 
-static char	*ft_store(const char *chr_stored, const char *buff)
+static char	*ft_store(char *chr_stored, char *buff)
 {
 	char	*result;
 
@@ -32,10 +32,8 @@ static char	*ft_find_line(char *str)
 	char	*line;
 	int		size;
 	int		i;
-	int		j;
 
 	i = 0;
-	j = 0;
 	while (str[i] != '\n' && str[i])
 		i++;
 	if (str[i] == '\n')
@@ -44,13 +42,11 @@ static char	*ft_find_line(char *str)
 		size = i + 1;
 	line = malloc(size * sizeof(char));
 	if (!line)
-		return (NULL);
-	while (j < size)
 	{
-		line[j] = str[j];
-		j++;
+		free(str);
+		return (NULL);
 	}
-	line[j] = '\0';
+	ft_strlcpy(line, str, size);
 	return (line);
 }
 
@@ -71,13 +67,16 @@ static char	*ft_clean_storage(char *str)
 	size = ft_strlen(str) - i;
 	result = malloc((size + 1) * sizeof(char));
 	if (!result)
+	{
+		free(str);
 		return (NULL);
-	while (str[i])
-		ft_strlcpy(result, &str[i + 1], size + 1);
+	}
+	ft_strlcpy(result, &str[i + 1], size + 1);
 	free(str);
 	return (result);
 }
-
+// put condition if fd is invalid
+//
 char	*get_next_line(int fd)
 {
 	char		buff[BUFFER_SIZE + 1];
@@ -89,11 +88,16 @@ char	*get_next_line(int fd)
 	temp = NULL;
 	while (temp == NULL)
 	{
-		n_char = read(fd, buff, sizeof(buff));
-		if (n_char <= 0) //this need to be checked
+		n_char = read(fd, buff, BUFFER_SIZE);
+		if (n_char <= 0)
 			break ;
 		buff[n_char] = '\0';
 		temp = ft_strchr(buff, '\n');
+		if (!storage)
+		{
+			storage = malloc(1);
+			storage[0] = '\0';
+		}
 		storage = ft_store(storage, buff);
 		if (!storage)
 			return (NULL);

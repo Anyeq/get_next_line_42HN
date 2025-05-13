@@ -6,7 +6,7 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:41:22 by asando            #+#    #+#             */
-/*   Updated: 2025/05/09 13:29:27 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/13 21:47:36 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,25 @@ size_t	ft_strlen(const char *str)
 	return (count);
 }
 
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void			*arr;
+	size_t			i;
+	unsigned char	*strs;
+
+	arr = malloc(nmemb * size);
+	if (arr == NULL)
+		return (NULL);
+	strs = (unsigned char *)arr;
+	i = 0;
+	while (i < (nmemb * size))
+	{
+		*(strs + i) = 0;
+		i++;
+	}
+	return (arr);
+}
+
 size_t	ft_strlcpy(char *dest, const char *src, size_t len)
 {
 	size_t	i;
@@ -60,35 +79,13 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t len)
 	return (len_src);
 }
 
-size_t	ft_strlcat(char *dest, const char *src, size_t len)
-{
-	size_t	i;
-	size_t	dest_len;
-	size_t	src_len;
-	size_t	total_len;
-
-	i = 0;
-	dest_len = ft_strlen(dest);
-	src_len = ft_strlen(src);
-	total_len = dest_len + src_len;
-	if (len <= dest_len)
-		return (src_len + len);
-	while (src[i] != '\0' && ((dest_len + i) < (len - 1)))
-	{
-		dest[dest_len + i] = src[i];
-		i++;
-	}
-	if ((dest_len + i) < len)
-		dest[dest_len + i] = '\0';
-	return (total_len);
-}
-
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*result_str;
 	size_t	s1_len;
 	size_t	s2_len;
 	int		total_len;
+	int		i;
 
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
@@ -97,6 +94,12 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (result_str == NULL)
 		return (NULL);
 	ft_strlcpy(result_str, s1, s1_len + 1);
-	ft_strlcat(result_str, s2, total_len);
+	i = 0;
+	while (s2[i])
+	{
+		result_str[i + s1_len] = s2[i];
+		i++;
+	}
+	result_str[i + s1_len] = '\0';
 	return (result_str);
 }

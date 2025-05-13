@@ -6,7 +6,7 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:40:51 by asando            #+#    #+#             */
-/*   Updated: 2025/05/13 17:16:42 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/13 22:14:15 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -23,6 +23,8 @@ static char	*ft_store(char *chr_stored, char *buff)
 		chr_stored[0] = '\0';
 	}
 	result = ft_strjoin(chr_stored, buff);
+	if (buff)
+		free(buff);
 	if (result == NULL)
 	{
 		free(chr_stored);
@@ -96,27 +98,33 @@ static char	*ft_clean_storage(char *str)
 
 char	*get_next_line(int fd)
 {
-	char		buff[BUFFER_SIZE + 1];
+	char		*buff;
 	ssize_t		n_char;
-	char		*temp;
 	char		*line;
+	char		*temp;
 	static char	*storage;
 
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+		return (NULL);
 	temp = NULL;
-	while (temp == NULL)
+	while (!temp)
 	{
-		if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+		buff = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		if (!buff)
 			return (NULL);
 		n_char = read(fd, buff, BUFFER_SIZE);
 		if (n_char == 0 || n_char < 0)
+		{
+			free(buff);
 			break ;
+		}
 		buff[n_char] = '\0';
 		temp = ft_strchr(buff, '\n');
 		storage = ft_store(storage, buff);
 		if (!storage)
 			return (NULL);
 	}
-	if (n_char <= 0)
+	if (n_char <= 0 && !storage)
 		return (NULL);
 	line = ft_find_line(storage);
 	storage = ft_clean_storage(storage);

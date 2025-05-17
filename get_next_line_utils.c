@@ -6,7 +6,7 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:41:22 by asando            #+#    #+#             */
-/*   Updated: 2025/05/13 21:47:36 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/15 16:30:43 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,25 +38,6 @@ size_t	ft_strlen(const char *str)
 	while (str[count] != '\0')
 		count++;
 	return (count);
-}
-
-void	*ft_calloc(size_t nmemb, size_t size)
-{
-	void			*arr;
-	size_t			i;
-	unsigned char	*strs;
-
-	arr = malloc(nmemb * size);
-	if (arr == NULL)
-		return (NULL);
-	strs = (unsigned char *)arr;
-	i = 0;
-	while (i < (nmemb * size))
-	{
-		*(strs + i) = 0;
-		i++;
-	}
-	return (arr);
 }
 
 size_t	ft_strlcpy(char *dest, const char *src, size_t len)

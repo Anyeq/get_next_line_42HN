@@ -6,7 +6,7 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:41:04 by asando            #+#    #+#             */
-/*   Updated: 2025/05/19 09:03:52 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/19 14:53:42 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 8
-# endif
-# ifndef OPEN_MAX
-#  define OPEN_MAX 1024
 # endif
 
 char	*get_next_line(int fd);

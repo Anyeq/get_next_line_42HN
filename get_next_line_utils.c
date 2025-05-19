@@ -6,7 +6,7 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:41:22 by asando            #+#    #+#             */
-/*   Updated: 2025/05/15 16:30:43 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/19 08:22:53 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,20 @@ size_t	ft_strlen(const char *str)
 	return (count);
 }
 
+int	err_check(int fd, char **storage)
+{
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	{
+		if (*storage)
+		{
+			free(*storage);
+			*storage = NULL;
+		}
+		return (0);
+	}
+	return (1);
+}
+
 size_t	ft_strlcpy(char *dest, const char *src, size_t len)
 {
 	size_t	i;
@@ -56,7 +70,7 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t len)
 		dest[i] = src[i];
 		i++;
 	}
-	dest[i] = 0;
+	dest[i] = '\0';
 	return (len_src);
 }
 

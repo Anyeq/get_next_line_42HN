@@ -6,7 +6,7 @@
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:40:51 by asando            #+#    #+#             */
-/*   Updated: 2025/05/17 14:17:54 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/19 08:21:58 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -38,36 +38,38 @@ char	*ft_store_char(char *storage, char *buff, int *new_line_found)
 	return (result);
 }
 
-char	*ft_find_line(char *storage, ssize_t byte_read)
+char	*ft_find_line(char **storage, ssize_t byte_read)
 {
 	char	*line;
 	int		size;
 	int		i;
 
-	if (byte_read < 0 || storage == NULL)
+	if (byte_read < 0 || *storage == NULL)
 		return (NULL);
 	i = 0;
-	while (storage[i] != '\n' && storage[i])
+	while ((*storage)[i] != '\n' && (*storage)[i])
 		i++;
-	if (storage[i] == '\n')
+	if ((*storage)[i] == '\n')
 		size = i + 2;
 	else
 		size = i + 1;
 	line = malloc(size * sizeof(char));
 	if (!line)
+	{
+		free(*storage);
+		*storage = NULL;
 		return (NULL);
-	ft_strlcpy(line, storage, size);
+	}
+	ft_strlcpy(line, *storage, size);
 	return (line);
 }
 
-char	*ft_clean_storage(char *storage)
+char	*ft_clean_storage(char *storage, char **line)
 {
 	char	*result;
 	int		size;
 	int		i;
 
-	if (!storage)
-		return (NULL);
 	i = 0;
 	while (storage[i] != '\n' && storage[i])
 		i++;
@@ -80,6 +82,8 @@ char	*ft_clean_storage(char *storage)
 	result = malloc((size) * sizeof(char));
 	if (!result)
 	{
+		free(*line);
+		*line = NULL;
 		free(storage);
 		return (NULL);
 	}
@@ -88,12 +92,16 @@ char	*ft_clean_storage(char *storage)
 	return (result);
 }
 
-ssize_t	read_fd(int fd, char *buff)
+ssize_t	read_fd(int fd, char *buff, char **storage)
 {
 	ssize_t	byte_read;
 
 	if (!buff)
+	{
+		free(*storage);
+		*storage = NULL;
 		return (-1000);
+	}
 	byte_read = read(fd, buff, BUFFER_SIZE);
 	if (byte_read < 0 || byte_read == 0)
 	{
@@ -112,27 +120,22 @@ char	*get_next_line(int fd)
 	static char	*storage;
 	int			new_line_found;
 
-	new_line_found = 0;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-	{
-		if (storage)
-		{
-			free(storage);
-			storage = NULL;
-		}
+	if (!err_check(fd, &storage))
 		return (NULL);
-	}
+	new_line_found = 0;
 	while (!new_line_found)
 	{
 		buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		byte_read = read_fd(fd, buff);
+		byte_read = read_fd(fd, buff, &storage);
 		if (byte_read <= 0)
 			break ;
 		storage = ft_store_char(storage, buff, &new_line_found);
 		if (!storage)
 			return (NULL);
 	}
-	line = ft_find_line(storage, byte_read);
-	storage = ft_clean_storage(storage);
+	line = ft_find_line(&storage, byte_read);
+	if (!storage && !(line))
+		return (NULL);
+	storage = ft_clean_storage(storage, &line);
 	return (line);
 }

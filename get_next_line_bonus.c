@@ -1,15 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asando <asando@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:40:51 by asando            #+#    #+#             */
-/*   Updated: 2025/05/19 08:21:58 by asando           ###   ########.fr       */
+/*   Updated: 2025/05/19 09:00:20 by asando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_store_char(char *storage, char *buff, int *new_line_found)
 {
@@ -117,25 +117,25 @@ char	*get_next_line(int fd)
 	char		*buff;
 	ssize_t		byte_read;
 	char		*line;
-	static char	*storage;
+	static char	*storage[OPEN_MAX];
 	int			new_line_found;
 
-	if (!err_check(fd, &storage))
+	if (!err_check(fd, &storage[fd]))
 		return (NULL);
 	new_line_found = 0;
 	while (!new_line_found)
 	{
 		buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		byte_read = read_fd(fd, buff, &storage);
+		byte_read = read_fd(fd, buff, &storage[fd]);
 		if (byte_read <= 0)
 			break ;
-		storage = ft_store_char(storage, buff, &new_line_found);
-		if (!storage)
+		storage[fd] = ft_store_char(storage[fd], buff, &new_line_found);
+		if (!storage[fd])
 			return (NULL);
 	}
-	line = ft_find_line(&storage, byte_read);
-	if (!storage && !(line))
+	line = ft_find_line(&storage[fd], byte_read);
+	if (!storage[fd] && !(line))
 		return (NULL);
-	storage = ft_clean_storage(storage, &line);
+	storage[fd] = ft_clean_storage(storage[fd], &line);
 	return (line);
 }
